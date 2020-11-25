@@ -34,6 +34,10 @@ app.get('*', (_, res: Response) => {
   res.sendFile(path.join(__dirname, 'client/public', 'index.html'));
 });
 
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => console.log(`Server Running on ${PORT}`));
+}
+
 // Connect to MongoDB and listen for new requests
 const expressServer = server.listen(PORT, async () => {
   try {

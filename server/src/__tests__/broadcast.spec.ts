@@ -24,15 +24,19 @@ describe('Broadcast endpoints', () => {
 
   let broadcastId: string;
 
-  it('should add a broadcast', async () => {
+  it('should add a broadcast', async (done) => {
     const response: any = await request(expressServer)
       .post('/api/create-broadcast')
       .set('Content-Type', 'application/json')
       .send(mocks.mockUser1)
       .expect(200);
     expect(response.body.broadcastId).toBeTruthy;
-    const mongooseAddedBroadcast = await BroadcastModel.find({ broadcastId });
-    expect(mongooseAddedBroadcast).toBeTruthy;
+    let test;
+    setTimeout(async () => {
+      test = await BroadcastModel.find({ broadcastId });
+      expect(test).toBeTruthy;
+      done();
+    }, 1000);
     broadcastId = response.body.broadcastId;
   });
 
@@ -70,7 +74,7 @@ describe('Broadcast endpoints', () => {
       })
       .expect(200);
     const mongooseDeletedBroadcast = await BroadcastModel.find({ broadcastId });
-    expect(mongooseDeletedBroadcast).toBeFalsy;
+    expect(mongooseDeletedBroadcast.length).toBe(0);
   });
 
   it('should be not able to delete a broadcast, if it does not exists', async () => {

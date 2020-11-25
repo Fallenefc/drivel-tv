@@ -68,7 +68,6 @@ const createBroadcast = async (req: Request, res: Response) => {
 
     // Store broadcast in DB using Mongoose
     await Broadcast.create(broadcastObj);
-
     // Start CRON timer (update broadcast every second)
     startCron(broadcastId);
 

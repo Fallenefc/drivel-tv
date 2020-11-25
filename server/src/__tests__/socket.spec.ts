@@ -6,12 +6,13 @@ import MessageModel from '../models/Message-model';
 import mocks from '../mocks/mocks';
 
 let socket: any;
+const MONGO_DB = 'mongodb://localhost:27017/driveltv';
 
-describe.only('socket.io testing', () => {
+describe('socket.io testing', () => {
   beforeAll(async (done) => {
     socket = io('http://localhost:4000', { transports: ['websocket'] });
     socket.emit('join', mocks.mockRoom);
-    await mongoose.connect(process.env.MONGO_DB, {
+    await mongoose.connect(MONGO_DB, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
@@ -26,9 +27,9 @@ describe.only('socket.io testing', () => {
     done();
   });
 
-  it('Client should create message (and store in DB) when the message is emitted', (done) => {
+  it('Client should create message (and store in DB) when the message is emitted', async (done) => {
     socket.emit('chat message to server', mocks.mockMessage);
-    const msg: any = MessageModel.find({ msg: mocks.mockMessage.msg });
+    const msg: any = await MessageModel.find();
     expect(msg).toBeTruthy;
     done();
   });
